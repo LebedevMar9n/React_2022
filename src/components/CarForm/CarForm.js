@@ -17,28 +17,36 @@ const CarForm = ({ setNewCar, carForUpdate }) => {
         }
     }, [carForUpdate]);
 
-const submit = async (car) => {
-    try {
-        const { data } = await carService.create(car)
-        setNewCar(data)
-        reset()
-    } catch (error) {
-        // setErrorForm(error.response.data)
-    }
+    const submit = async (car) => {
+        try {
+            if (carForUpdate) {
+                const { data } = await carService.updateById(carForUpdate.id, car)
+                setNewCar(data)
 
-}
-return (
-    <form onSubmit={handleSubmit(submit)}>
-        <div><label>Model:<input type="text" {...register('model')} /></label></div>
-        {errors.model && <span>{errors.model.message}</span>}            {/* {errorForm.model && <span>{errorForm.model[0]}</span>} */}
-        <div><label>Price:<input type="text" {...register('price', { valueAsNumber: true })} /></label></div>
-        {errors.price && <span>{errors.price.message}</span>}
-        {/* {errorForm.price && <span>{errorForm.price[0]}</span>} */}
-        <div><label>Year:<input type="text" {...register('year', { valueAsNumber: true })} /></label></div>
-        {errors.year && <span>{errors.year.message}</span>}
-        {/* {errorForm.year && <span>{errorForm.year[0]}</span>} */}
-        <button>SAVE</button>
-    </form>
-)
+            } else {
+                const { data } = await carService.create(car)
+                setNewCar(data)
+            }
+            reset()
+        } catch (error) {
+            // setErrorForm(error.response.data)
+        }
+
+    }
+    return (
+        <form onSubmit={handleSubmit(submit)}>
+            <div><label>Model:<input type="text" {...register('model')} /></label></div>
+            {errors.model && <span>{errors.model.message}</span>}            {/* {errorForm.model && <span>{errorForm.model[0]}</span>} */}
+            <div><label>Price:<input type="text" {...register('price', { valueAsNumber: true })} /></label></div>
+            {errors.price && <span>{errors.price.message}</span>}
+            {/* {errorForm.price && <span>{errorForm.price[0]}</span>} */}
+            <div><label>Year:<input type="text" {...register('year', { valueAsNumber: true })} /></label></div>
+            {errors.year && <span>{errors.year.message}</span>}
+            {/* {errorForm.year && <span>{errorForm.year[0]}</span>} */}
+            <br />
+            <button>{carForUpdate ? 'Update' : 'Save'}</button>
+            { !!carForUpdate && <button onClick={()=>{reset()}}>Clear form</button>}
+        </form>
+    )
 }
 export { CarForm }
