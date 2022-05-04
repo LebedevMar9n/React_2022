@@ -1,10 +1,13 @@
-import Smth from "./components/";
+import { CarForm } from "./components/CarForm/CarForm";
+import { Cars } from "./components/Cars/Cars";
 
-function App(){
-  return(
-      <div>
-       <Smth/>
-      </div> 
+function App() {
+  return (
+    <div>
+      <CarForm />
+      <hr />
+      <Cars />
+    </div>
   );
 }
 
