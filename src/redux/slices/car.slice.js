@@ -23,12 +23,28 @@ const create = createAsyncThunk(
             return rejectWithValue({ status: error.massage, formError: error.response.data })
         }
     }
+);
+const deleteById = createAsyncThunk(
+    'deleteById',
+    async ({ id }, { dispatch, rejectWithValue }) => {
+        try {
+            await carService.deleteById(id);
+            dispatch(deleteByCarId({ id }))
+        } catch (error) {
+            return rejectWithValue({ status: error.massage })
+        }
+    }
 )
 
 const carSlice = createSlice({
     name: 'carSlice',
     initialState,
-    reducers: {},
+    reducers: {
+        deleteByCarId: (state, action) => {
+            const index = state.cars.findIndex(car => car.id === action.payload.id);
+            state.cars.splice(index,1)
+        }
+    },
     extraReducers: {
         [getAll.pending]: (state, action) => {
             state.status = 'pending'
@@ -50,11 +66,12 @@ const carSlice = createSlice({
     }
 })
 
-const { reducer: carReducer, actions: { } } = carSlice;
+const { reducer: carReducer, actions: { deleteByCarId} } = carSlice;
 
 const carActions = {
     getAll,
-    create
+    create,
+    deleteById
 }
 
 export default carReducer
