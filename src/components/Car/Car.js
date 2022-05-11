@@ -9,7 +9,7 @@ function Car({ car,car: { id, model, price, year } }) {
     dispatch(carActions.deleteById({ id }))
   };
   const update = () => {
-    dispatch(carActions.setCarForUpdate({ id,car }))
+    dispatch(carActions.setCarForUpdate({ car }))
   }
   return (
     <div>

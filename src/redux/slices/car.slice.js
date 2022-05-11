@@ -4,7 +4,8 @@ const { createAsyncThunk, createSlice } = require("@reduxjs/toolkit");
 
 const initialState = {
     cars: [],
-    status: null
+    status: null,
+    carForUpdate:null
 };
 const getAll = createAsyncThunk(
     'carSlice/getAll',
@@ -34,6 +35,17 @@ const deleteById = createAsyncThunk(
             return rejectWithValue({ status: error.massage })
         }
     }
+);
+const updateById=createAsyncThunk(
+    'updateById',
+    async({id,car},{dispatch,rejectWithValue})=>{
+        try {
+            await carService.upadateById(id,car);
+            dispatch(updateCarById({id,car}))
+        } catch (error) {
+            return rejectWithValue({ status: error.massage })
+        } 
+    }
 )
 
 const carSlice = createSlice({
@@ -43,6 +55,14 @@ const carSlice = createSlice({
         deleteByCarId: (state, action) => {
             const index = state.cars.findIndex(car => car.id === action.payload.id);
             state.cars.splice(index,1)
+        },
+        setCarForUpdate:(state,action)=>{
+            state.carForUpdate=action.payload.car
+        },
+        updateCarById:(state,action)=>{
+            const index = state.cars.findIndex(car => car.id === action.payload.id);
+            state.cars[index]={...state.cars[index],...action.payload.car};
+            state.carForUpdate=false
         }
     },
     extraReducers: {
@@ -66,12 +86,14 @@ const carSlice = createSlice({
     }
 })
 
-const { reducer: carReducer, actions: { deleteByCarId} } = carSlice;
+const { reducer: carReducer, actions: {updateCarById, deleteByCarId,setCarForUpdate} } = carSlice;
 
 const carActions = {
+    setCarForUpdate,
     getAll,
     create,
-    deleteById
+    deleteById,
+    updateById
 }
 
 export default carReducer
